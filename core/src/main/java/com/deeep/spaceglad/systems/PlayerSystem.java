@@ -5,15 +5,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
+import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.managers.Helpers;
 
 public class PlayerSystem extends EntitySystem implements EntityListener {
@@ -46,6 +45,10 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && characterComponent.characterController.canJump()) {
             characterComponent.characterController.jump(new Vector3(0, 500, 0));
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.CONTROL_LEFT)) {
+            getEngine().addEntity(EntityFactory.createPatron(position.cpy().add(Helpers.camera.direction.cpy().setLength(60)), 10, Helpers.camera.direction.cpy()));
+        }
+
         move.y = 0;
         move.setLength(10);
 

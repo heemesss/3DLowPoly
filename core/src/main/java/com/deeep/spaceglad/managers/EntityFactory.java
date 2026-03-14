@@ -7,22 +7,22 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
-import com.badlogic.gdx.physics.bullet.collision.btConvexShape;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
-import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.JsonReader;
 import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
+import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 
 public class EntityFactory {
@@ -79,6 +79,7 @@ public class EntityFactory {
         btPairCachingGhostObject ghostObject = new btPairCachingGhostObject();
         ghostObject.setWorldTransform(modelComponent.instance.transform);
         ghostObject.setCollisionShape(shape);
+        ghostObject.userData = entity;
         ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
         btKinematicCharacterController characterController = new btKinematicCharacterController(ghostObject, shape, 0.35f);
         characterController.setGravity(new Vector3(0, -1000, 0));
@@ -104,12 +105,42 @@ public class EntityFactory {
         btPairCachingGhostObject ghostObject = new btPairCachingGhostObject();
         ghostObject.setWorldTransform(modelComponent.instance.transform);
         ghostObject.setCollisionShape(shape);
+        ghostObject.userData = entity;
         ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
         btKinematicCharacterController characterController = new btKinematicCharacterController(ghostObject, shape, 0.35f);
         characterController.setGravity(new Vector3(0, -1000, 0));
         characterController.setFallSpeed(10*50);
         CharacterComponent characterComponent = new CharacterComponent(ghostObject, shape, characterController);
         entity.add(characterComponent);
+
+        EnemyComponent enemyComponent = new EnemyComponent(100);
+        entity.add(enemyComponent);
+
+        return entity;
+    }
+
+    public static Entity createPatron(Vector3 position, int damage, Vector3 direction) {
+        Entity entity = new Entity();
+
+        ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("Models/bullet.g3dj"));
+        Model model = new Model(modelData, new TextureProvider.FileTextureProvider());
+        ModelComponent modelComponent = new ModelComponent(model, position.x, position.y, position.z);
+        entity.add(modelComponent);
+
+        btBoxShape shape = new btBoxShape(new Vector3(10, 10, 10));
+        btPairCachingGhostObject ghostObject = new btPairCachingGhostObject();
+        ghostObject.setWorldTransform(new Matrix4().setToTranslation(position));
+        ghostObject.setCollisionShape(shape);
+        ghostObject.userData = entity;
+        ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        btKinematicCharacterController characterController = new btKinematicCharacterController(ghostObject, shape, 0.35f);
+        characterController.setFallSpeed(0);
+        CharacterComponent characterComponent = new CharacterComponent(ghostObject, shape, characterController);
+        entity.add(characterComponent);
+
+        PatronComponent patronComponent = new PatronComponent(direction, damage);
+        entity.add(patronComponent);
 
         return entity;
     }

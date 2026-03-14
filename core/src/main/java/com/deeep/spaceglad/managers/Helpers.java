@@ -5,5 +5,5 @@ import com.badlogic.gdx.graphics.Camera;
 
 public class Helpers {
     static public Camera camera;
-    static public Entity player;
+//    static public Entity player;
 }

@@ -15,19 +15,18 @@ import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btConvexShape;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback;
-import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
-import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
+import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.components.PatronComponent;
+import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.Helpers;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
@@ -41,14 +40,33 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private DebugDrawer debugDrawer;
     private final boolean debug = false;
 
-    public class MyContactListener extends ContactListener {
+    public static class MyContactListener extends ContactListener {
         @Override
         public void onContactStarted(btCollisionObject colObj0, btCollisionObject colObj1) {
-//            System.out.println("SDFASDFASDFA");
-//            if (colObj0.userData instanceof Entity && colObj1.userData instanceof Entity) {
-//                Entity entity0 = (Entity) colObj0.userData;
-//                Entity entity1 = (Entity) colObj1.userData;
-//            }
+            if (colObj0.userData instanceof Entity && colObj1.userData instanceof Entity) {
+                Entity entity0 = (Entity) colObj0.userData;
+                Entity entity1 = (Entity) colObj1.userData;
+                if ((entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PlayerComponent.class) != null) ||
+                    (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null)){
+                    System.out.println("DASFASDFASDFASDF");
+                }
+
+
+                if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PatronComponent.class) != null) {
+                    PatronComponent patronComponent = entity1.getComponent(PatronComponent.class);
+                    EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
+
+                    patronComponent.timeOfLise = -1;
+                    // ToDo: kill
+                }
+                if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PatronComponent.class) != null) {
+                    PatronComponent patronComponent = entity0.getComponent(PatronComponent.class);
+                    EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
+
+                    patronComponent.timeOfLise = -1;
+                    // ToDo: kill
+                }
+            }
         }
     }
 
@@ -113,8 +131,14 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
     public void removeBody(Entity entity) {
         BulletComponent comp = entity.getComponent(BulletComponent.class);
+        CharacterComponent characterComponent = entity.getComponent(CharacterComponent.class);
         if (comp != null)
             collisionWorld.removeCollisionObject(comp.body);
+        if (characterComponent != null) {
+            collisionWorld.removeCollisionObject(characterComponent.ghostObject);
+            collisionWorld.removeAction(characterComponent.characterController);
+            collisionWorld.removeCharacter(characterComponent.characterController);
+        }
     }
 
     public void dispose() {
@@ -126,6 +150,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
-
+        removeBody(entity);
+        entity.removeAll();
     }
 }

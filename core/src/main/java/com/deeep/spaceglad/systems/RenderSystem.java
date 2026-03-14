@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -22,10 +21,10 @@ public class RenderSystem extends EntitySystem {
     private static final float FOV = 67F;
     private ImmutableArray<Entity> entities;
     private ModelBatch batch;
-    private Environment environment;
-    private DirectionalShadowLight shadowLight;
+    private final Environment environment;
+    private final DirectionalShadowLight shadowLight;
     public PerspectiveCamera camera;
-    private Vector3 position;
+    private final Vector3 position;
 
     public RenderSystem(){
         camera = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

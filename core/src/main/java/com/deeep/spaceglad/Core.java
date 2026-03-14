@@ -44,7 +44,4 @@ public class Core extends ApplicationAdapter {
         return screen;
     }
 
-    @Override
-    public void dispose() {
-    }
 }
