@@ -1,9 +1,13 @@
-package com.deeep.spaceglad;
+package com.deeep.spaceglad.Worlds;
 
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.deeep.spaceglad.Assets;
+import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Helpers;
 import com.deeep.spaceglad.systems.BulletSystem;
 import com.deeep.spaceglad.systems.EnemySystem;
 import com.deeep.spaceglad.systems.PatronSystem;
@@ -12,15 +16,18 @@ import com.deeep.spaceglad.systems.RenderSystem;
 
 public class GameWorld{
     private Engine engine;
+    private GameUI gameUI;
 
     public GameWorld(){
+        new Assets();
+        engine = new Engine();
+        gameUI = new GameUI();
         Bullet.init();
         addSystems();
         addEntities();
     }
 
     private void addSystems() {
-        engine = new Engine();
         engine.addSystem(new RenderSystem());
         engine.addSystem(new BulletSystem());
         engine.addSystem(new PlayerSystem());
@@ -29,20 +36,30 @@ public class GameWorld{
     }
 
     private void addEntities(){
+//        engine.addEntity(EntityFactory.loadScene(0, -4000, 0, "start"));
+//        engine.addEntity(EntityFactory.createPlayer(0, -3700, 0));
+//        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 0));
+//        engine.addEntity(EntityFactory.createButton(0, -3945, -300, 1));
+//        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 2));
+
         engine.addEntity(EntityFactory.loadScene(-100, -1000, -100, "mountains"));
-        engine.addEntity(EntityFactory.loadObject(0, 100, 0, "desk"));
         engine.addEntity(EntityFactory.createPlayer(0, 500, 0));
         engine.addEntity(EntityFactory.createEnemy(100, 100, 0));
     }
 
     public void render(float delta) {
         engine.update(delta);
+        gameUI.update(delta);
+        gameUI.render();
     }
 
     public void resize(int width, int height) {
-
+        gameUI.resize(width, height);
     }
 
     public void dispose() {
+        engine.removeAllSystems();
+        engine.removeAllEntities();
+        gameUI.dispose();
     }
 }

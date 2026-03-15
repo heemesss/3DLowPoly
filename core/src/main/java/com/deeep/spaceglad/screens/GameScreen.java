@@ -3,14 +3,12 @@ package com.deeep.spaceglad.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
-import com.deeep.spaceglad.GameWorld;
+import com.deeep.spaceglad.Worlds.GameWorld;
 
 public class GameScreen implements Screen {
-    Core game;
     GameWorld gameWorld;
 
-    public GameScreen(Core game) {
-        this.game = game;
+    public GameScreen() {
         gameWorld = new GameWorld();
     }
 

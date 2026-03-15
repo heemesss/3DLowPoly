@@ -6,6 +6,8 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
@@ -20,14 +22,19 @@ import com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.linearmath.HullResult;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.components.BulletComponent;
+import com.deeep.spaceglad.components.ButtonComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.Helpers;
+import com.deeep.spaceglad.managers.Stats;
+import com.deeep.spaceglad.screens.GameScreen;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
     private final btCollisionConfiguration collisionConfiguration;
@@ -40,31 +47,57 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private DebugDrawer debugDrawer;
     private final boolean debug = false;
 
+
     public static class MyContactListener extends ContactListener {
         @Override
         public void onContactStarted(btCollisionObject colObj0, btCollisionObject colObj1) {
             if (colObj0.userData instanceof Entity && colObj1.userData instanceof Entity) {
                 Entity entity0 = (Entity) colObj0.userData;
                 Entity entity1 = (Entity) colObj1.userData;
-                if ((entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PlayerComponent.class) != null) ||
-                    (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null)){
-                    System.out.println("DASFASDFASDFASDF");
+                if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PlayerComponent.class) != null){
+                    EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
+                    CharacterComponent characterComponent = entity1.getComponent(CharacterComponent.class);
+                    enemyComponent.isALife = false;
+                    Stats.health -= 1;
+//                    if (Stats.health == 0) {
+//                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, -4000, 0), new Quaternion(), new Vector3()));
+//                    }
+                }
+                else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
+                    EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
+                    CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
+                    enemyComponent.isALife = false;
+                    Stats.health -= 1;
+//                    if (Stats.health == 0) {
+//                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, -4000, 0), new Quaternion(), new Vector3()));
+//                    }
                 }
 
 
-                if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PatronComponent.class) != null) {
+                else if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PatronComponent.class) != null) {
                     PatronComponent patronComponent = entity1.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
 
-                    patronComponent.timeOfLise = -1;
-                    // ToDo: kill
+                    patronComponent.timeOfLive = -1;
+                    enemyComponent.isALife = false;
+                    Stats.score += 100;
                 }
-                if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PatronComponent.class) != null) {
+                else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PatronComponent.class) != null) {
                     PatronComponent patronComponent = entity0.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
 
-                    patronComponent.timeOfLise = -1;
-                    // ToDo: kill
+                    patronComponent.timeOfLive = -1;
+                    enemyComponent.isALife = false;
+                    Stats.score += 100;
+                }
+
+                else if (entity1.getComponent(ButtonComponent.class) != null) {
+                    ButtonComponent buttonComponent = entity1.getComponent(ButtonComponent.class);
+                    CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
+                    if (buttonComponent.type == 0){
+                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, 500, 0), new Quaternion(), new Vector3()));
+                        Stats.health = 1;
+                    }
                 }
             }
         }
@@ -73,6 +106,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     public BulletSystem(){
         MyContactListener myContactListener = new MyContactListener();
         myContactListener.enable();
+
         collisionConfiguration = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfiguration);
         broadphase = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
@@ -92,6 +126,8 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     @Override
     public void update(float deltaTime) {
         collisionWorld.stepSimulation(deltaTime);
+
+        System.out.println(entities.size());
         for (Entity entity : entities) {
             ModelComponent modelComponent = entity.getComponent(ModelComponent.class);
             CharacterComponent characterComponent = entity.getComponent(CharacterComponent.class);
@@ -137,15 +173,22 @@ public class BulletSystem extends EntitySystem implements EntityListener {
         if (characterComponent != null) {
             collisionWorld.removeCollisionObject(characterComponent.ghostObject);
             collisionWorld.removeAction(characterComponent.characterController);
-            collisionWorld.removeCharacter(characterComponent.characterController);
         }
     }
 
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        dispose();
+    }
+
     public void dispose() {
-        collisionWorld.dispose();
-        if (broadphase != null) broadphase.dispose();
-        if (dispatcher != null) dispatcher.dispose();
-        if (collisionConfiguration != null) collisionConfiguration.dispose();
+
+//        collisionWorld.dispose();
+
+//        if (broadphase != null) broadphase.dispose();
+//        if (dispatcher != null) dispatcher.dispose();
+//        if (collisionConfiguration != null) collisionConfiguration.dispose();
     }
 
     @Override

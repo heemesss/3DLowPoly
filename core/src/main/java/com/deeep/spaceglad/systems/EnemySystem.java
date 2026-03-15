@@ -10,10 +10,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.managers.Helpers;
 
 public class EnemySystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
+    private float timeToSpawn = 5f;
+    private float timeOfSpawn = 0f;
 
     @Override
     public void update(float deltaTime) {
@@ -23,6 +26,10 @@ public class EnemySystem extends EntitySystem {
             EnemyComponent enemyComponent = entity.getComponent(EnemyComponent.class);
             ModelComponent modelComponent = entity.getComponent(ModelComponent.class);
             CharacterComponent characterComponent = entity.getComponent(CharacterComponent.class);
+
+            enemyComponent.speed += 1;
+            if (enemyComponent.speed > 150)
+                enemyComponent.speed = 150;
 
             Vector3 position = new Vector3();
             modelComponent.instance.transform.getTranslation(position);
@@ -43,10 +50,31 @@ public class EnemySystem extends EntitySystem {
             // hitbox move
             characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
 
+//            if (position.y < -1000 || !enemyComponent.isALife) {
+//                getEngine().removeEntity(entity);
+//                getEngine().addEntity(EntityFactory.spawnEnemy());
+//            }
+
+        }
+
+        timeOfSpawn += deltaTime;
+        if (timeOfSpawn > timeToSpawn && entities.size() < 20) {
+            getEngine().addEntity(EntityFactory.spawnEnemy());
+            timeOfSpawn = 0;
+            timeToSpawn -= 0.5f;
+            if (timeToSpawn < 1) {
+                timeToSpawn = 1;
+            }
         }
     }
 
     public void addedToEngine(Engine e) {
         entities = e.getEntitiesFor(Family.all(EnemyComponent.class).get());
+    }
+
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        entities = null;
     }
 }

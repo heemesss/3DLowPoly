@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
@@ -34,10 +33,16 @@ public class PatronSystem extends EntitySystem {
             // hitbox move
             characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
 
-            patronComponent.timeOfLise -= deltaTime;
-            if (patronComponent.timeOfLise < 0) {
+            patronComponent.timeOfLive -= deltaTime;
+            if (patronComponent.timeOfLive < 0) {
                 getEngine().removeEntity(entity);
             }
         }
+    }
+
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        entities = null;
     }
 }

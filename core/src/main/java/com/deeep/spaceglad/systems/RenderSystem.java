@@ -21,10 +21,10 @@ public class RenderSystem extends EntitySystem {
     private static final float FOV = 67F;
     private ImmutableArray<Entity> entities;
     private ModelBatch batch;
-    private final Environment environment;
+    private Environment environment;
     private final DirectionalShadowLight shadowLight;
     public PerspectiveCamera camera;
-    private final Vector3 position;
+    private Vector3 position;
 
     public RenderSystem(){
         camera = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -90,5 +90,17 @@ public class RenderSystem extends EntitySystem {
     public void dispose() {
         batch.dispose();
         batch = null;
+//        entities = null;
+//        environment.clear();
+//        environment = null;
+//        shadowLight.dispose();
+//        camera = null;
+//        position = null;
+    }
+
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        dispose();
     }
 }

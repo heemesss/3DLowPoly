@@ -52,7 +52,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         move.y = 0;
         move.setLength(10);
 
-
         modelComponent.instance.transform.set(position.add(move), new Quaternion());
         characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
         Helpers.camera.position.set(position);
@@ -73,5 +72,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     @Override
     public void entityRemoved(Entity entity) {
 
+    }
+
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        player = null;
     }
 }
