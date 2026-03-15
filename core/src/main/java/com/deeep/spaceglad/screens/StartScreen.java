@@ -4,12 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.Worlds.GameWorld;
+import com.deeep.spaceglad.Worlds.StartWorld;
 
-public class GameScreen implements Screen {
-    private GameWorld gameWorld;
+public class StartScreen implements Screen {
+    private StartWorld gameWorld;
 
-    public GameScreen(Core game) {
-        gameWorld = new GameWorld(game);
+    public StartScreen(Core game) {
+        gameWorld = new StartWorld(game);
     }
 
     @Override

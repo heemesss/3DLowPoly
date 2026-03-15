@@ -37,6 +37,7 @@ import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.Helpers;
 import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.screens.GameScreen;
+import com.deeep.spaceglad.screens.StartScreen;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
     private btDynamicsWorld collisionWorld;
@@ -48,10 +49,12 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private ImmutableArray<Entity> entities;
 
     private DebugDrawer debugDrawer;
-    private final boolean debug = false;
+    private final boolean debug = true;
+
+    private Core game;
 
 
-    public static class MyContactListener extends ContactListener {
+    public class MyContactListener extends ContactListener {
         @Override
         public void onContactStarted(btCollisionObject colObj0, btCollisionObject colObj1) {
             if (colObj0.userData instanceof Entity && colObj1.userData instanceof Entity) {
@@ -62,18 +65,18 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     CharacterComponent characterComponent = entity1.getComponent(CharacterComponent.class);
                     enemyComponent.isALife = false;
                     Stats.health -= 1;
-//                    if (Stats.health == 0) {
-//                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, -4000, 0), new Quaternion(), new Vector3()));
-//                    }
+                    if (Stats.health == 0) {
+                        game.setScreen(new StartScreen(game));
+                    }
                 }
                 else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
                     enemyComponent.isALife = false;
                     Stats.health -= 1;
-//                    if (Stats.health == 0) {
-//                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, -4000, 0), new Quaternion(), new Vector3()));
-//                    }
+                    if (Stats.health == 0) {
+                        game.setScreen(new StartScreen(game));
+                    }
                 }
 
 
@@ -81,24 +84,26 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     PatronComponent patronComponent = entity1.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
 
+                    if (patronComponent.timeOfLive > 0)
+                        Stats.score += 100;
                     patronComponent.timeOfLive = -1;
                     enemyComponent.isALife = false;
-                    Stats.score += 100;
                 }
                 else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PatronComponent.class) != null) {
                     PatronComponent patronComponent = entity0.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
 
+                    if (patronComponent.timeOfLive > 0)
+                        Stats.score += 100;
                     patronComponent.timeOfLive = -1;
                     enemyComponent.isALife = false;
-                    Stats.score += 100;
                 }
 
                 else if (entity1.getComponent(ButtonComponent.class) != null) {
                     ButtonComponent buttonComponent = entity1.getComponent(ButtonComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
                     if (buttonComponent.type == 0){
-                        characterComponent.ghostObject.setWorldTransform(new Matrix4(new Vector3(0, 500, 0), new Quaternion(), new Vector3()));
+                        game.setScreen(new GameScreen(game));
                         Stats.health = 1;
                     }
                 }
@@ -106,9 +111,11 @@ public class BulletSystem extends EntitySystem implements EntityListener {
         }
     }
 
-    public BulletSystem(){
+    public BulletSystem(Core game){
         MyContactListener myContactListener = new MyContactListener();
         myContactListener.enable();
+
+        this.game = game;
 
         collisionConfiguration = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfiguration);

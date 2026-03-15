@@ -50,10 +50,10 @@ public class EnemySystem extends EntitySystem {
             // hitbox move
             characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
 
-//            if (position.y < -1000 || !enemyComponent.isALife) {
-//                getEngine().removeEntity(entity);
-//                getEngine().addEntity(EntityFactory.spawnEnemy());
-//            }
+            if (position.y < -1000 || !enemyComponent.isALife) {
+                getEngine().removeEntity(entity);
+                getEngine().addEntity(EntityFactory.spawnEnemy());
+            }
 
         }
 
