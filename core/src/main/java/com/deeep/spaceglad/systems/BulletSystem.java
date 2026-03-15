@@ -17,9 +17,11 @@ import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.HullResult;
@@ -37,10 +39,11 @@ import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.screens.GameScreen;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
-    private final btCollisionConfiguration collisionConfiguration;
-    private final btCollisionDispatcher dispatcher;
-    private final btBroadphaseInterface broadphase;
-    public final btDiscreteDynamicsWorld collisionWorld;
+    private btDynamicsWorld collisionWorld;
+    private btDefaultCollisionConfiguration collisionConfiguration;
+    private btCollisionDispatcher dispatcher;
+    private btDbvtBroadphase broadphase;
+    private btSequentialImpulseConstraintSolver constraintSolver;
 
     private ImmutableArray<Entity> entities;
 
@@ -109,9 +112,9 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
         collisionConfiguration = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        broadphase = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
+        broadphase = new btDbvtBroadphase();
         btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
-        collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+        collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, constraintSolver, collisionConfiguration);
         btGhostPairCallback ghostPairCallback = new btGhostPairCallback();
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
         collisionWorld.setGravity(new Vector3(0, -10, 0));
