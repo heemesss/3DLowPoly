@@ -22,13 +22,23 @@ public class GameUI {
 
     private void setWidgets(){
         scoreWidget = new ScoreWidget();
+        crosshairWidget = new CrosshairWidget();
+        healthWidget = new HealthWidget();
 
         stage.addActor(scoreWidget);
+        stage.addActor(crosshairWidget);
+        stage.addActor(healthWidget);
     }
 
     private void configureWidgets(){
         scoreWidget.setSize(140, 25);
         scoreWidget.setPosition(0, Gdx.graphics.getHeight() - scoreWidget.getHeight());
+
+        healthWidget.setSize(140, 25);
+        healthWidget.setPosition(0, Gdx.graphics.getHeight() - healthWidget.getHeight() * 3);
+
+        crosshairWidget.setPosition(Gdx.graphics.getWidth() / 2f - 16, Gdx.graphics.getHeight() / 2f - 16);
+        crosshairWidget.setSize(32, 32);
     }
 
     public void update(float delta) {

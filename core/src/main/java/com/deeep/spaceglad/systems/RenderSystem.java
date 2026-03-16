@@ -49,7 +49,7 @@ public class RenderSystem extends EntitySystem {
 
     public void update(float delta) {
         camera.update();
-        drawModels(delta);
+        drawModels();
         if (Gdx.input.isCursorCatched()){
             camera.rotate(camera.up, -Gdx.input.getDeltaX() * 0.5f);
             camera.direction.rotate(new Vector3().set(camera.direction).crs(camera.up).nor(), -Gdx.input.getDeltaY() * 0.5f);
@@ -73,7 +73,7 @@ public class RenderSystem extends EntitySystem {
         shadowLight.end();
     }
 
-    private void drawModels(float delta) {
+    private void drawModels() {
         batch.begin(camera);
         for (int i = 0; i < entities.size(); i++) {
             ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);

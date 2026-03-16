@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -49,7 +50,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private ImmutableArray<Entity> entities;
 
     private DebugDrawer debugDrawer;
-    private final boolean debug = true;
+    private final boolean debug = false;
 
     private Core game;
 
@@ -63,20 +64,22 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                 if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PlayerComponent.class) != null){
                     EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
                     CharacterComponent characterComponent = entity1.getComponent(CharacterComponent.class);
-                    enemyComponent.isALife = false;
-                    Stats.health -= 1;
+                    if (enemyComponent.isALife)
+                        Stats.health -= 1;
                     if (Stats.health == 0) {
                         game.setScreen(new StartScreen(game));
                     }
+                    enemyComponent.isALife = false;
                 }
                 else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
-                    enemyComponent.isALife = false;
-                    Stats.health -= 1;
+                    if (enemyComponent.isALife)
+                        Stats.health -= 1;
                     if (Stats.health == 0) {
                         game.setScreen(new StartScreen(game));
                     }
+                    enemyComponent.isALife = false;
                 }
 
 

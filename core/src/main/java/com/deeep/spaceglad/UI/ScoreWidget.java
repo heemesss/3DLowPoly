@@ -3,7 +3,6 @@ package com.deeep.spaceglad.UI;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.Assets;
 
