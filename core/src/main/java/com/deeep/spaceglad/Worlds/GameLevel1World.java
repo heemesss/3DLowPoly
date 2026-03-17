@@ -18,13 +18,11 @@ import com.deeep.spaceglad.systems.RenderSystem;
 
 public class GameLevel1World {
     private Engine engine;
-    private GameUI gameUI;
     private Core game;
 
     public GameLevel1World(Core game){
         new Assets();
         engine = new Engine();
-        gameUI = new GameUI();
         this.game = game;
         Bullet.init();
         addSystems();
@@ -53,18 +51,14 @@ public class GameLevel1World {
             game.setScreen(new StartLevelsScreen(game));
             Gdx.app.getPreferences("levels").flush();
         }
-        gameUI.update(delta);
-        gameUI.render();
     }
 
     public void resize(int width, int height) {
-        gameUI.resize(width, height);
     }
 
     public void dispose() {
         engine.removeAllSystems();
         engine.removeAllEntities();
-        gameUI.dispose();
         engine = null;
     }
 }

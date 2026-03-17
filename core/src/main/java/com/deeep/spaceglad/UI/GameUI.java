@@ -1,22 +1,36 @@
 package com.deeep.spaceglad.UI;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.managers.ControllerWidget;
+import com.deeep.spaceglad.managers.Helpers;
+import com.deeep.spaceglad.managers.Stats;
+import com.deeep.spaceglad.screens.MainMenuScreen;
+import com.deeep.spaceglad.screens.StartInfinityScreen;
+import com.deeep.spaceglad.screens.StartLevelsScreen;
 
 public class GameUI {
-    private Stage stage;
+    private Core game;
+    public Stage stage;
 
-    public ScoreWidget scoreWidget;
-    public HealthWidget healthWidget;
+    private ScoreWidget scoreWidget;
+    private HealthWidget healthWidget;
     private CrosshairWidget crosshairWidget;
     private StatusWidget statusWidget;
+    private ControllerWidget controllerWidget;
 
-    public GameUI(){
-        stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
+    private Image exit;
+    private Image fire;
+
+    public GameUI(Core game){
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        this.game = game;
         setWidgets();
         configureWidgets();
     }
@@ -26,11 +40,18 @@ public class GameUI {
         crosshairWidget = new CrosshairWidget();
         healthWidget = new HealthWidget();
         statusWidget = new StatusWidget();
+        controllerWidget = new ControllerWidget();
+        fire = new Image(new Texture("data/fire.png"));
+        exit = new Image(new Texture("data/exit.png"));
 
         stage.addActor(scoreWidget);
         stage.addActor(crosshairWidget);
         stage.addActor(healthWidget);
         stage.addActor(statusWidget);
+        stage.addActor(fire);
+        stage.addActor(exit);
+
+        controllerWidget.addToStage(stage);
     }
 
     private void configureWidgets(){
@@ -45,6 +66,28 @@ public class GameUI {
 
         statusWidget.setSize(Gdx.graphics.getWidth() / 3f, 32);
         statusWidget.setPosition(Gdx.graphics.getWidth() / 2f - statusWidget.getWidth() / 2f, Gdx.graphics.getHeight() - statusWidget.getHeight());
+
+        fire.setSize(Gdx.graphics.getWidth() / 8f, Gdx.graphics.getWidth() / 8f);
+        fire.setPosition(Gdx.graphics.getWidth() / 4f * 3, Gdx.graphics.getHeight() / 3f);
+        fire.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Helpers.fire = true;
+            }
+        });
+
+        exit.setSize(Gdx.graphics.getWidth() / 12f, Gdx.graphics.getWidth() / 12f);
+        exit.setPosition(Gdx.graphics.getWidth() - fire.getWidth() / 1.5f, Gdx.graphics.getHeight() - fire.getHeight() / 1.5f);
+        exit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (game.getScreen() instanceof StartInfinityScreen || game.getScreen() instanceof StartLevelsScreen){
+                    game.setScreen(new MainMenuScreen(game));
+                    return;
+                }
+                game.setScreen(Stats.isLevels ? new StartLevelsScreen(game) : new StartInfinityScreen(game));
+            }
+        });
     }
 
     public void update(float delta) {

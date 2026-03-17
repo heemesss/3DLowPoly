@@ -6,4 +6,5 @@ import com.deeep.spaceglad.Core;
 
 public class Helpers {
     static public Camera camera;
+    static public boolean fire;
 }
