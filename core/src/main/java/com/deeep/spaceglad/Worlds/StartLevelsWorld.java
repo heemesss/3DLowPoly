@@ -1,6 +1,9 @@
 package com.deeep.spaceglad.Worlds;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
@@ -36,10 +39,12 @@ public class StartLevelsWorld {
     private void addEntities(){
         engine.addEntity(EntityFactory.loadScene(0, -4000, 0, "start"));
         engine.addEntity(EntityFactory.createPlayer(0, -3700, 0));
-        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 0));
-        engine.addEntity(EntityFactory.createButton(-100, -3945, -300, 1));
-        engine.addEntity(EntityFactory.createButton(100, -3945, -300, 2));
-        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 3));
+        Preferences preferences = Gdx.app.getPreferences("levels");
+
+        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 0, preferences.getBoolean("level1", true)));
+        engine.addEntity(EntityFactory.createButton(-100, -3945, -300, 1, preferences.getBoolean("level2", false)));
+        engine.addEntity(EntityFactory.createButton(100, -3945, -300, 2, preferences.getBoolean("level3", false)));
+        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 3, preferences.getBoolean("final", false)));
 
         engine.addEntity(EntityFactory.createText(-300, -3845, -300, "level1.png"));
         engine.addEntity(EntityFactory.createText(-100, -3845, -300, "level2.png"));

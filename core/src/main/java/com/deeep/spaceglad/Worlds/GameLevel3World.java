@@ -2,11 +2,14 @@ package com.deeep.spaceglad.Worlds;
 
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Stats;
+import com.deeep.spaceglad.screens.StartLevelsScreen;
 import com.deeep.spaceglad.systems.BulletSystem;
 import com.deeep.spaceglad.systems.EnemySystem;
 import com.deeep.spaceglad.systems.PatronSystem;
@@ -50,6 +53,12 @@ public class GameLevel3World {
 
     public void render(float delta) {
         engine.update(delta);
+        if (Stats.moneys < 1) {
+            Gdx.app.getPreferences("levels").putBoolean("final", true);
+            Gdx.app.getPreferences("levels").flush();
+            game.setScreen(new StartLevelsScreen(game));
+            return;
+        }
         gameUI.update(delta);
         gameUI.render();
     }

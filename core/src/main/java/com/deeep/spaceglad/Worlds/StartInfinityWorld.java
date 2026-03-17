@@ -2,6 +2,7 @@ package com.deeep.spaceglad.Worlds;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
@@ -40,7 +41,7 @@ public class StartInfinityWorld {
         engine.addEntity(EntityFactory.loadScene(0, -4000, 0, "start"));
         engine.addEntity(EntityFactory.createPlayer(0, -3700, 0));
 //        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 0));
-        engine.addEntity(EntityFactory.createButton(0, -3945, -300, -1));
+        engine.addEntity(EntityFactory.createButton(0, -3945, -300, -1, true));
         engine.addEntity(EntityFactory.createText(0, -3845, -300, "start.png"));
 //        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 2));
 

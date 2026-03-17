@@ -43,9 +43,9 @@ public class GameFinalWorld {
 //        engine.addEntity(EntityFactory.createButton(0, -3945, -300, 1));
 //        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 2));
 
-        engine.addEntity(EntityFactory.loadScene(-100, -1000, -100, "mountains"));
-        engine.addEntity(EntityFactory.createPlayer(0, 500, 0));
-        engine.addEntity(EntityFactory.createEnemy(100, 100, 0));
+        engine.addEntity(EntityFactory.loadScene(-100, -1000, -100, "levelfinal"));
+        engine.addEntity(EntityFactory.createPlayer(2000, 0, 2000));
+        engine.addEntity(EntityFactory.createBossEnemy(0, 0, 0));
     }
 
     public void render(float delta) {

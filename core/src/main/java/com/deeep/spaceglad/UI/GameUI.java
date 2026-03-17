@@ -13,6 +13,7 @@ public class GameUI {
     public ScoreWidget scoreWidget;
     public HealthWidget healthWidget;
     private CrosshairWidget crosshairWidget;
+    private StatusWidget statusWidget;
 
     public GameUI(){
         stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
@@ -24,10 +25,12 @@ public class GameUI {
         scoreWidget = new ScoreWidget();
         crosshairWidget = new CrosshairWidget();
         healthWidget = new HealthWidget();
+        statusWidget = new StatusWidget();
 
         stage.addActor(scoreWidget);
         stage.addActor(crosshairWidget);
         stage.addActor(healthWidget);
+        stage.addActor(statusWidget);
     }
 
     private void configureWidgets(){
@@ -39,6 +42,9 @@ public class GameUI {
 
         crosshairWidget.setPosition(Gdx.graphics.getWidth() / 2f - 16, Gdx.graphics.getHeight() / 2f - 16);
         crosshairWidget.setSize(32, 32);
+
+        statusWidget.setSize(Gdx.graphics.getWidth() / 3f, 32);
+        statusWidget.setPosition(Gdx.graphics.getWidth() / 2f - statusWidget.getWidth() / 2f, Gdx.graphics.getHeight() - statusWidget.getHeight());
     }
 
     public void update(float delta) {

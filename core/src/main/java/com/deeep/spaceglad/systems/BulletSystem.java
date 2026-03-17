@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
@@ -27,8 +28,10 @@ import com.deeep.spaceglad.components.ButtonComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.components.MoneyComponent;
 import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
+import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.managers.Helpers;
 import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.screens.GameFinalScreen;
@@ -37,6 +40,7 @@ import com.deeep.spaceglad.screens.GameLevel1Screen;
 import com.deeep.spaceglad.screens.GameLevel2Screen;
 import com.deeep.spaceglad.screens.GameLevel3Screen;
 import com.deeep.spaceglad.screens.StartInfinityScreen;
+import com.deeep.spaceglad.screens.StartLevelsScreen;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
     private btDynamicsWorld collisionWorld;
@@ -59,6 +63,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
             if (colObj0.userData instanceof Entity && colObj1.userData instanceof Entity) {
                 Entity entity0 = (Entity) colObj0.userData;
                 Entity entity1 = (Entity) colObj1.userData;
+                // enemy and player
                 if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PlayerComponent.class) != null){
                     EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
                     CharacterComponent characterComponent = entity1.getComponent(CharacterComponent.class);
@@ -69,6 +74,8 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     }
                     enemyComponent.isALife = false;
                 }
+
+                // enemy and player
                 else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
@@ -80,29 +87,65 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     enemyComponent.isALife = false;
                 }
 
-
+                // enemy and patron
                 else if (entity0.getComponent(EnemyComponent.class) != null && entity1.getComponent(PatronComponent.class) != null) {
                     PatronComponent patronComponent = entity1.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity0.getComponent(EnemyComponent.class);
+                    ModelComponent modelComponent = entity0.getComponent(ModelComponent.class);
 
-                    if (patronComponent.timeOfLive > 0)
+                    if (patronComponent.timeOfLive > 0){
+                        if (Stats.moneys > 0) {
+                            Vector3 position = new Vector3();
+                            modelComponent.instance.transform.getTranslation(position);
+                            getEngine().addEntity(EntityFactory.createMoney(position.x, position.y, position.z));
+                        }
+
                         Stats.score += 100;
+                        if (!enemyComponent.isABoss || enemyComponent.health == 0) {
+                            enemyComponent.isALife = false;
+                            if (enemyComponent.isABoss) {
+                                game.setScreen(new StartLevelsScreen(game));
+                            }
+                        } else {
+                            enemyComponent.health--;
+                        }
+                    }
                     patronComponent.timeOfLive = -1;
-                    enemyComponent.isALife = false;
+
                 }
+
+                // enemy and patron
                 else if (entity1.getComponent(EnemyComponent.class) != null && entity0.getComponent(PatronComponent.class) != null) {
                     PatronComponent patronComponent = entity0.getComponent(PatronComponent.class);
                     EnemyComponent enemyComponent = entity1.getComponent(EnemyComponent.class);
+                    ModelComponent modelComponent = entity1.getComponent(ModelComponent.class);
 
-                    if (patronComponent.timeOfLive > 0)
+                    if (patronComponent.timeOfLive > 0){
+                        if (Stats.moneys > 0) {
+                            Vector3 position = new Vector3();
+                            modelComponent.instance.transform.getTranslation(position);
+                            getEngine().addEntity(EntityFactory.createMoney(position.x, position.y, position.z));
+                        }
                         Stats.score += 100;
+                        if (!enemyComponent.isABoss || enemyComponent.health == 0) {
+                            enemyComponent.isALife = false;
+                            if (enemyComponent.isABoss) {
+                                game.setScreen(new StartLevelsScreen(game));
+                            }
+                        } else {
+                            enemyComponent.health--;
+                        }
+                    }
                     patronComponent.timeOfLive = -1;
-                    enemyComponent.isALife = false;
                 }
 
+                // button and player
                 else if (entity1.getComponent(ButtonComponent.class) != null) {
                     ButtonComponent buttonComponent = entity1.getComponent(ButtonComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
+
+                    if (!buttonComponent.isActive)
+                        return;
 
                     switch (buttonComponent.type) {
                         case -1:
@@ -115,17 +158,24 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                             break;
                         case 1:
                             game.setScreen(new GameLevel2Screen(game));
+                            Stats.time = 5;
                             Stats.health = 1;
                             break;
                         case 2:
                             game.setScreen(new GameLevel3Screen(game));
                             Stats.health = 1;
+                            Stats.moneys = 10;
                             break;
                         case 3:
                             game.setScreen(new GameFinalScreen(game));
                             Stats.health = 1;
                             break;
                     }
+                }
+
+                else if (entity1.getComponent(MoneyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
+                    Stats.moneys--;
+                    getEngine().removeEntity(entity1);
                 }
             }
         }
