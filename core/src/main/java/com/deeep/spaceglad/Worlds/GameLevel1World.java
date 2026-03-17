@@ -29,6 +29,7 @@ public class GameLevel1World {
         Bullet.init();
         addSystems();
         addEntities();
+        Stats.status = "score 2000 points";
     }
 
     private void addSystems() {

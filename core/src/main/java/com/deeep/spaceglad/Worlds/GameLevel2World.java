@@ -3,6 +3,7 @@ package com.deeep.spaceglad.Worlds;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
@@ -46,6 +47,7 @@ public class GameLevel2World {
 
     public void render(float delta) {
         Stats.time -= delta;
+        Stats.status = "live " + (int) Stats.time + " seconds";
         if (Stats.time < 0) {
             Gdx.app.getPreferences("levels").putBoolean("level3", true);
             Gdx.app.getPreferences("levels").flush();

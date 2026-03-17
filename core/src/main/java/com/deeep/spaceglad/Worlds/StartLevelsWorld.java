@@ -9,6 +9,7 @@ import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.systems.BulletSystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
@@ -27,6 +28,9 @@ public class StartLevelsWorld {
         Bullet.init();
         addSystems();
         addEntities();
+        Stats.status = "choice level";
+        Stats.score = 0;
+        Stats.isLevels = true;
     }
 
     private void addSystems() {

@@ -7,4 +7,6 @@ public class Stats {
     public static float time;
     public static int moneys;
     public static String status;
+
+    public static boolean isLevels;
 }

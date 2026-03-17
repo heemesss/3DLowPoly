@@ -8,6 +8,7 @@ import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.systems.BulletSystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
@@ -26,6 +27,8 @@ public class StartInfinityWorld {
         Bullet.init();
         addSystems();
         addEntities();
+        Stats.score = 0;
+        Stats.isLevels = false;
     }
 
     private void addSystems() {

@@ -7,6 +7,7 @@ import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.systems.BulletSystem;
 import com.deeep.spaceglad.systems.EnemySystem;
 import com.deeep.spaceglad.systems.PatronSystem;
@@ -49,6 +50,7 @@ public class GameFinalWorld {
     }
 
     public void render(float delta) {
+        Stats.status = "kill boss";
         engine.update(delta);
         gameUI.update(delta);
         gameUI.render();

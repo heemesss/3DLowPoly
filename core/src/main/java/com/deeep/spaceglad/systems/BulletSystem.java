@@ -70,7 +70,10 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     if (enemyComponent.isALife)
                         Stats.health -= 1;
                     if (Stats.health == 0) {
-                        game.setScreen(new StartInfinityScreen(game));
+                        if (Stats.isLevels)
+                            game.setScreen(new StartLevelsScreen(game));
+                        else
+                            game.setScreen(new StartInfinityScreen(game));
                     }
                     enemyComponent.isALife = false;
                 }
@@ -82,7 +85,10 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     if (enemyComponent.isALife)
                         Stats.health -= 1;
                     if (Stats.health == 0) {
-                        game.setScreen(new StartInfinityScreen(game));
+                        if (Stats.isLevels)
+                            game.setScreen(new StartLevelsScreen(game));
+                        else
+                            game.setScreen(new StartInfinityScreen(game));
                     }
                     enemyComponent.isALife = false;
                 }
@@ -174,8 +180,11 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                 }
 
                 else if (entity1.getComponent(MoneyComponent.class) != null && entity0.getComponent(PlayerComponent.class) != null) {
-                    Stats.moneys--;
-                    getEngine().removeEntity(entity1);
+                    if (!entity1.getComponent(MoneyComponent.class).isCollect) {
+                        entity1.getComponent(MoneyComponent.class).isCollect = true;
+                        Stats.moneys -= 1;
+                        getEngine().removeEntity(entity1);
+                    }
                 }
             }
         }
@@ -207,7 +216,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     public void update(float deltaTime) {
         collisionWorld.stepSimulation(deltaTime);
 
-        System.out.println(entities.size());
         for (Entity entity : entities) {
             ModelComponent modelComponent = entity.getComponent(ModelComponent.class);
             CharacterComponent characterComponent = entity.getComponent(CharacterComponent.class);
