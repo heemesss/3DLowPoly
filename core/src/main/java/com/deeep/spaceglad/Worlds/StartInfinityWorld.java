@@ -55,5 +55,6 @@ public class StartInfinityWorld {
     public void dispose() {
         engine.removeAllSystems();
         engine.removeAllEntities();
+        engine = null;
     }
 }

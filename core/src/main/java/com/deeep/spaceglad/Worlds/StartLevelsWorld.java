@@ -67,5 +67,6 @@ public class StartLevelsWorld {
     public void dispose() {
         engine.removeAllSystems();
         engine.removeAllEntities();
+        engine = null;
     }
 }

@@ -53,8 +53,7 @@ public class GameLevel3World {
         engine.update(delta);
         Stats.status = "take " + Stats.moneys + " moneys";
         if (Stats.moneys < 1) {
-            Gdx.app.getPreferences("levels").putBoolean("final", true);
-            Gdx.app.getPreferences("levels").flush();
+            Gdx.app.getPreferences("levels").putBoolean("final", true).flush();
             game.setScreen(new StartLevelsScreen(game));
             return;
         }

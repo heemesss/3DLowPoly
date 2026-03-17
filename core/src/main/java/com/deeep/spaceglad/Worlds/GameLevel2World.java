@@ -47,8 +47,7 @@ public class GameLevel2World {
         Stats.time -= delta;
         Stats.status = "live " + (int) Stats.time + " seconds";
         if (Stats.time < 0) {
-            Gdx.app.getPreferences("levels").putBoolean("level3", true);
-            Gdx.app.getPreferences("levels").flush();
+            Gdx.app.getPreferences("levels").putBoolean("level3", true).flush();
             game.setScreen(new StartLevelsScreen(game));
             return;
         }

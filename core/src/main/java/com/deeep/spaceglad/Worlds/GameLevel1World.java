@@ -41,15 +41,14 @@ public class GameLevel1World {
     private void addEntities(){
         engine.addEntity(EntityFactory.loadScene(-100, -1000, -100, "level1"));
         engine.addEntity(EntityFactory.createPlayer(1000, -850, 0));
-        engine.addEntity(EntityFactory.createEnemy(100, 100, 0));
+//        engine.addEntity(EntityFactory.createEnemy(100, 100, 0));
     }
 
     public void render(float delta) {
         engine.update(delta);
         if (Stats.score == 2000) {
-            Gdx.app.getPreferences("levels").putBoolean("level2", true);
+            Gdx.app.getPreferences("levels").putBoolean("level2", true).flush();
             game.setScreen(new StartLevelsScreen(game));
-            Gdx.app.getPreferences("levels").flush();
         }
     }
 

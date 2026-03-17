@@ -282,6 +282,16 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     @Override
     public void entityRemoved(Entity entity) {
         removeBody(entity);
+        if (entity.getComponent(BulletComponent.class) != null) {
+            BulletComponent bulletComponent = entity.getComponent(BulletComponent.class);
+            bulletComponent.body.dispose();
+        }
+        if (entity.getComponent(CharacterComponent.class) != null) {
+            CharacterComponent characterComponent = entity.getComponent(CharacterComponent.class);
+            characterComponent.ghostObject.dispose();
+            characterComponent.characterController.dispose();
+            characterComponent.ghostShape.dispose();
+        }
         entity.removeAll();
     }
 }

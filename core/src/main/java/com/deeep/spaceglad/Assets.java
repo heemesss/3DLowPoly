@@ -1,6 +1,7 @@
 package com.deeep.spaceglad;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,6 +31,8 @@ public class Assets {
             new TextureRegionDrawable(new Texture("data/button_up.png")),
             new TextureRegionDrawable(new Texture("data/button_down.png")),
             new TextureRegionDrawable(new Texture("data/button_up.png")), Assets.skin.getFont("default-font"));
+        Preferences preferences = Gdx.app.getPreferences("levels");
+        preferences.flush();
     }
 
     public static void dispose() {

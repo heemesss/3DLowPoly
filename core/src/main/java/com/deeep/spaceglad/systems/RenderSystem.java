@@ -2,6 +2,7 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
@@ -17,7 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.Helpers;
 
-public class RenderSystem extends EntitySystem {
+public class RenderSystem extends EntitySystem implements EntityListener {
     private static final float FOV = 67F;
     private ImmutableArray<Entity> entities;
     private ModelBatch batch;
@@ -45,6 +46,7 @@ public class RenderSystem extends EntitySystem {
 
     public void addedToEngine(Engine e) {
         entities = e.getEntitiesFor(Family.all(ModelComponent.class).get());
+        e.addEntityListener(Family.all(ModelComponent.class).get(), this);
     }
 
     public void update(float delta) {
@@ -102,5 +104,17 @@ public class RenderSystem extends EntitySystem {
     public void removedFromEngine(Engine engine) {
         super.removedFromEngine(engine);
         dispose();
+    }
+
+    @Override
+    public void entityAdded(Entity entity) {
+
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+        ModelComponent modelComponent = entity.getComponent(ModelComponent.class);
+        modelComponent.instance.model.dispose();
+        modelComponent.instance = null;
     }
 }
