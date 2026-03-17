@@ -18,6 +18,16 @@ public class EnemySystem extends EntitySystem {
     private float timeToSpawn = 5f;
     private float timeOfSpawn = 0f;
 
+    private int x1, x2, y1, y2, z;
+
+    public EnemySystem(int x1, int x2, int y1, int y2, int z){
+        this.x1 = x1;
+        this.x2 = x2;
+        this.y1 = y1;
+        this.y2 = y2;
+        this.z = z;
+    }
+
     @Override
     public void update(float deltaTime) {
         Vector3 player_pos = Helpers.camera.position.cpy();
@@ -52,14 +62,14 @@ public class EnemySystem extends EntitySystem {
 
             if (position.y < -1000 || !enemyComponent.isALife) {
                 getEngine().removeEntity(entity);
-                getEngine().addEntity(EntityFactory.spawnEnemy());
+                getEngine().addEntity(EntityFactory.spawnEnemy(x1, x2, y1, y2, z));
             }
 
         }
 
         timeOfSpawn += deltaTime;
         if (timeOfSpawn > timeToSpawn && entities.size() < 20) {
-            getEngine().addEntity(EntityFactory.spawnEnemy());
+            getEngine().addEntity(EntityFactory.spawnEnemy(x1, x2, y1, y2, z));
             timeOfSpawn = 0;
             timeToSpawn -= 0.5f;
             if (timeToSpawn < 1) {

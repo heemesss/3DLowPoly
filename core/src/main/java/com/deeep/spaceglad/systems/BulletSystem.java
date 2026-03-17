@@ -6,16 +6,10 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
-import com.badlogic.gdx.physics.bullet.collision.btAxisSweep3;
-import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
@@ -25,9 +19,9 @@ import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
-import com.badlogic.gdx.physics.bullet.linearmath.HullResult;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.Worlds.GameLevel1World;
 import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.ButtonComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
@@ -37,8 +31,12 @@ import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.Helpers;
 import com.deeep.spaceglad.managers.Stats;
-import com.deeep.spaceglad.screens.GameScreen;
-import com.deeep.spaceglad.screens.StartScreen;
+import com.deeep.spaceglad.screens.GameFinalScreen;
+import com.deeep.spaceglad.screens.GameInfinityScreen;
+import com.deeep.spaceglad.screens.GameLevel1Screen;
+import com.deeep.spaceglad.screens.GameLevel2Screen;
+import com.deeep.spaceglad.screens.GameLevel3Screen;
+import com.deeep.spaceglad.screens.StartInfinityScreen;
 
 public class BulletSystem extends EntitySystem implements EntityListener {
     private btDynamicsWorld collisionWorld;
@@ -67,7 +65,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     if (enemyComponent.isALife)
                         Stats.health -= 1;
                     if (Stats.health == 0) {
-                        game.setScreen(new StartScreen(game));
+                        game.setScreen(new StartInfinityScreen(game));
                     }
                     enemyComponent.isALife = false;
                 }
@@ -77,7 +75,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     if (enemyComponent.isALife)
                         Stats.health -= 1;
                     if (Stats.health == 0) {
-                        game.setScreen(new StartScreen(game));
+                        game.setScreen(new StartInfinityScreen(game));
                     }
                     enemyComponent.isALife = false;
                 }
@@ -105,9 +103,28 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                 else if (entity1.getComponent(ButtonComponent.class) != null) {
                     ButtonComponent buttonComponent = entity1.getComponent(ButtonComponent.class);
                     CharacterComponent characterComponent = entity0.getComponent(CharacterComponent.class);
-                    if (buttonComponent.type == 0){
-                        game.setScreen(new GameScreen(game));
-                        Stats.health = 1;
+
+                    switch (buttonComponent.type) {
+                        case -1:
+                            game.setScreen(new GameInfinityScreen(game));
+                            Stats.health = 1;
+                            break;
+                        case 0:
+                            game.setScreen(new GameLevel1Screen(game));
+                            Stats.health = 1;
+                            break;
+                        case 1:
+                            game.setScreen(new GameLevel2Screen(game));
+                            Stats.health = 1;
+                            break;
+                        case 2:
+                            game.setScreen(new GameLevel3Screen(game));
+                            Stats.health = 1;
+                            break;
+                        case 3:
+                            game.setScreen(new GameFinalScreen(game));
+                            Stats.health = 1;
+                            break;
                     }
                 }
             }

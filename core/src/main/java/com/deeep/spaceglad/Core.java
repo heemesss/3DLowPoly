@@ -4,9 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.deeep.spaceglad.managers.Helpers;
-import com.deeep.spaceglad.screens.GameScreen;
-import com.deeep.spaceglad.screens.StartScreen;
+import com.deeep.spaceglad.screens.MainMenuScreen;
 
 public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_WIDTH = 1280;
@@ -15,7 +13,7 @@ public class Core extends ApplicationAdapter {
 
     @Override
     public void create() {
-        setScreen(new StartScreen(this));
+        setScreen(new MainMenuScreen(this));
     }
 
     @Override

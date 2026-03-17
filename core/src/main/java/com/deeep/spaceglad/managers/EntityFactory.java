@@ -26,6 +26,7 @@ import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
+import com.deeep.spaceglad.components.TextComponent;
 
 public class EntityFactory {
     public static Entity loadScene(int x, int y, int z, String name) {
@@ -147,9 +148,9 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity spawnEnemy(){
+    public static Entity spawnEnemy(int x1, int x2, int y1, int y2, int z){
 
-        return createEnemy(MathUtils.random(-2000, 2000), 0, MathUtils.random(-2000, 2000));
+        return createEnemy(MathUtils.random(x1, x2), z, MathUtils.random(y1, y2));
     }
 
     public static Entity createButton(int x, int y, int z, int type){
@@ -171,6 +172,30 @@ public class EntityFactory {
 
         ButtonComponent buttonComponent = new ButtonComponent(type);
         entity.add(buttonComponent);
+
+        return entity;
+    }
+
+    public static Entity createText(int x, int y, int z, String name) {
+        Entity entity = new Entity();
+
+        ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("Models/level.g3dj"));
+        modelData.materials.first().textures.first().fileName = "Models/" + name;
+        Model model = new Model(modelData, new TextureProvider.FileTextureProvider());
+        ModelComponent modelComponent = new ModelComponent(model, x, y, z);
+        entity.add(modelComponent);
+
+//        btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
+//        MotionState motionState = new MotionState(modelComponent.instance.transform);
+//        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, motionState, shape, Vector3.Zero);
+//        btRigidBody body = new btRigidBody(bodyInfo);
+//        body.userData = entity;
+//        BulletComponent bulletComponent = new BulletComponent(body);
+//        entity.add(bulletComponent);
+
+        TextComponent textComponent = new TextComponent();
+        entity.add(textComponent);
 
         return entity;
     }

@@ -1,0 +1,65 @@
+package com.deeep.spaceglad.Worlds;
+
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.deeep.spaceglad.Assets;
+import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.UI.GameUI;
+import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.systems.BulletSystem;
+import com.deeep.spaceglad.systems.PlayerSystem;
+import com.deeep.spaceglad.systems.RenderSystem;
+import com.deeep.spaceglad.systems.TextSystem;
+
+public class StartLevelsWorld {
+    private Engine engine;
+    private GameUI gameUI;
+    private Core game;
+
+    public StartLevelsWorld(Core game){
+        new Assets();
+        engine = new Engine();
+        gameUI = new GameUI();
+        this.game = game;
+        Bullet.init();
+        addSystems();
+        addEntities();
+    }
+
+    private void addSystems() {
+        engine.addSystem(new RenderSystem());
+        engine.addSystem(new BulletSystem(game));
+        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new TextSystem());
+    }
+
+    private void addEntities(){
+        engine.addEntity(EntityFactory.loadScene(0, -4000, 0, "start"));
+        engine.addEntity(EntityFactory.createPlayer(0, -3700, 0));
+        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 0));
+        engine.addEntity(EntityFactory.createButton(-100, -3945, -300, 1));
+        engine.addEntity(EntityFactory.createButton(100, -3945, -300, 2));
+        engine.addEntity(EntityFactory.createButton(300, -3945, -300, 3));
+
+        engine.addEntity(EntityFactory.createText(-300, -3845, -300, "level1.png"));
+        engine.addEntity(EntityFactory.createText(-100, -3845, -300, "level2.png"));
+        engine.addEntity(EntityFactory.createText(100, -3845, -300, "level3.png"));
+        engine.addEntity(EntityFactory.createText(300, -3845, -300, "final.png"));
+    }
+
+    public void render(float delta) {
+        engine.update(delta);
+        gameUI.update(delta);
+        gameUI.render();
+    }
+
+    public void resize(int width, int height) {
+        gameUI.resize(width, height);
+    }
+
+    public void dispose() {
+        engine.removeAllSystems();
+        engine.removeAllEntities();
+        gameUI.dispose();
+    }
+}

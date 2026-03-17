@@ -50,6 +50,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         }
 
         move.y = 0;
+        System.out.println(position.x + " " + position.y + " " + position.z);
         move.setLength(10);
 
         modelComponent.instance.transform.set(position.add(move), new Quaternion());
