@@ -20,10 +20,9 @@ public class StartInfinityWorld {
     private Core game;
 
     public StartInfinityWorld(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
-        Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
         Stats.score = 0;
@@ -42,7 +41,9 @@ public class StartInfinityWorld {
         engine.addEntity(EntityFactory.loadScene(0, -4000, 0, "start"));
         engine.addEntity(EntityFactory.createPlayer(0, -3700, 0));
         engine.addEntity(EntityFactory.createButton(0, -3945, -300, -1, true));
+        engine.addEntity(EntityFactory.createButton(-300, -3945, -300, 4, true));
         engine.addEntity(EntityFactory.createText(0, -3845, -300, "start.png"));
+        engine.addEntity(EntityFactory.createText(-300, -3845, -300, "exit.png"));
     }
 
     public void render(float delta) {

@@ -35,7 +35,7 @@ public class RenderSystem extends EntitySystem implements EntityListener {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 0.8f));
         shadowLight = new DirectionalShadowLight(1024 * 5, 1024 * 5, 200f, 200f, 1f, 300f);
-        shadowLight.set(1f, 1f, 1f, 0, -0.1f, 0.1f);
+        shadowLight.set(1f, 1f, 1f, 0, -0.1f, -0.1f);
         environment.add(shadowLight);
         environment.shadowMap = shadowLight;
 
@@ -92,12 +92,12 @@ public class RenderSystem extends EntitySystem implements EntityListener {
     public void dispose() {
         batch.dispose();
         batch = null;
-//        entities = null;
-//        environment.clear();
-//        environment = null;
-//        shadowLight.dispose();
-//        camera = null;
-//        position = null;
+        entities = null;
+        environment.clear();
+        environment = null;
+        shadowLight.dispose();
+        camera = null;
+        position = null;
     }
 
     @Override

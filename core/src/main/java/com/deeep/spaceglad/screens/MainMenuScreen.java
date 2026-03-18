@@ -75,7 +75,7 @@ public class MainMenuScreen implements Screen {
         onlineGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new StartLevelsScreen(game));
+                game.setScreen(new OnlineMenuScreen(game));
             }
         });
 

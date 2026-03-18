@@ -21,10 +21,9 @@ public class GameLevel1World {
     private Core game;
 
     public GameLevel1World(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
-        Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
         Stats.status = "score 2000 points";

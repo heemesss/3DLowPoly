@@ -19,10 +19,9 @@ public class GameFinalWorld {
     private Core game;
 
     public GameFinalWorld(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
-        Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
     }

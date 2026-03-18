@@ -22,10 +22,9 @@ public class GameLevel2World {
     private Core game;
 
     public GameLevel2World(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
-        Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
     }

@@ -21,10 +21,10 @@ public class StartLevelsWorld {
     private Core game;
 
     public StartLevelsWorld(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
         Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
         Stats.status = "choice level";
@@ -49,11 +49,13 @@ public class StartLevelsWorld {
         engine.addEntity(EntityFactory.createButton(-100, -3945, -300, 1, preferences.getBoolean("level2", false)));
         engine.addEntity(EntityFactory.createButton(100, -3945, -300, 2, preferences.getBoolean("level3", false)));
         engine.addEntity(EntityFactory.createButton(300, -3945, -300, 3, preferences.getBoolean("final", false)));
+        engine.addEntity(EntityFactory.createButton(-300, -3945, 100, 3, true));
 
         engine.addEntity(EntityFactory.createText(-300, -3845, -300, "level1.png"));
         engine.addEntity(EntityFactory.createText(-100, -3845, -300, "level2.png"));
         engine.addEntity(EntityFactory.createText(100, -3845, -300, "level3.png"));
         engine.addEntity(EntityFactory.createText(300, -3845, -300, "final.png"));
+        engine.addEntity(EntityFactory.createText(-300, -3845, 100, "exit.png"));
     }
 
     public void render(float delta) {

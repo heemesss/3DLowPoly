@@ -18,6 +18,7 @@ import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.ControllerWidget;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.managers.Helpers;
+import com.deeep.spaceglad.managers.Stats;
 
 import java.util.Objects;
 
@@ -78,7 +79,9 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
             }
         }
-
+        if (position.y < -4000) {
+            Stats.health = 0;
+        }
 
         modelComponent.instance.transform.set(position.add(move), new Quaternion());
         characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);

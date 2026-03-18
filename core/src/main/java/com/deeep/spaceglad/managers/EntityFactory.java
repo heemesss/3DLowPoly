@@ -27,6 +27,7 @@ import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.MoneyComponent;
+import com.deeep.spaceglad.components.OnlineComponent;
 import com.deeep.spaceglad.components.PatronComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.TextComponent;
@@ -245,6 +246,29 @@ public class EntityFactory {
 
         MoneyComponent moneyComponent = new MoneyComponent();
         entity.add(moneyComponent);
+
+        return entity;
+    }
+
+    public static Entity createOnlineEnemy() {
+        Entity entity = new Entity();
+
+        ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("Models/money.g3dj"));
+        Model model = new Model(modelData, new TextureProvider.FileTextureProvider());
+        ModelComponent modelComponent = new ModelComponent(model, 0, 0, 0);
+        entity.add(modelComponent);
+
+        btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
+        MotionState motionState = new MotionState(modelComponent.instance.transform);
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, motionState, shape, Vector3.Zero);
+        btRigidBody body = new btRigidBody(bodyInfo);
+        body.userData = entity;
+        BulletComponent bulletComponent = new BulletComponent(body);
+        entity.add(bulletComponent);
+
+        OnlineComponent onlineComponent = new OnlineComponent();
+        entity.add(onlineComponent);
 
         return entity;
     }

@@ -21,10 +21,9 @@ public class GameLevel3World {
     private Core game;
 
     public GameLevel3World(Core game){
-        new Assets();
         engine = new Engine();
         this.game = game;
-        Bullet.init();
+        Stats.health = 1;
         addSystems();
         addEntities();
     }

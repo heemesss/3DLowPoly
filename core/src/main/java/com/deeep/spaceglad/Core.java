@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.screens.MainMenuScreen;
 
 public class Core extends ApplicationAdapter {
@@ -14,6 +16,8 @@ public class Core extends ApplicationAdapter {
 
     @Override
     public void create() {
+        Bullet.init();
+        new Assets();
         setScreen(new MainMenuScreen(this));
     }
 

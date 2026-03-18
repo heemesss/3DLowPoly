@@ -25,7 +25,6 @@ public class GameUI {
     private StatusWidget statusWidget;
     private ControllerWidget controllerWidget;
 
-    private Image exit;
     private Image fire;
 
     public GameUI(Core game){
@@ -42,14 +41,12 @@ public class GameUI {
         statusWidget = new StatusWidget();
         controllerWidget = new ControllerWidget();
         fire = new Image(new Texture("data/fire.png"));
-        exit = new Image(new Texture("data/exit.png"));
 
         stage.addActor(scoreWidget);
         stage.addActor(crosshairWidget);
         stage.addActor(healthWidget);
         stage.addActor(statusWidget);
         stage.addActor(fire);
-        stage.addActor(exit);
 
         controllerWidget.addToStage(stage);
     }
@@ -73,19 +70,6 @@ public class GameUI {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Helpers.fire = true;
-            }
-        });
-
-        exit.setSize(Gdx.graphics.getWidth() / 12f, Gdx.graphics.getWidth() / 12f);
-        exit.setPosition(Gdx.graphics.getWidth() - fire.getWidth() / 1.5f, Gdx.graphics.getHeight() - fire.getHeight() / 1.5f);
-        exit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (game.getScreen() instanceof StartInfinityScreen || game.getScreen() instanceof StartLevelsScreen){
-                    game.setScreen(new MainMenuScreen(game));
-                    return;
-                }
-                game.setScreen(Stats.isLevels ? new StartLevelsScreen(game) : new StartInfinityScreen(game));
             }
         });
     }

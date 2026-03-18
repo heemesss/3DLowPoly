@@ -39,6 +39,7 @@ import com.deeep.spaceglad.screens.GameInfinityScreen;
 import com.deeep.spaceglad.screens.GameLevel1Screen;
 import com.deeep.spaceglad.screens.GameLevel2Screen;
 import com.deeep.spaceglad.screens.GameLevel3Screen;
+import com.deeep.spaceglad.screens.MainMenuScreen;
 import com.deeep.spaceglad.screens.StartInfinityScreen;
 import com.deeep.spaceglad.screens.StartLevelsScreen;
 
@@ -176,6 +177,9 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                             game.setScreen(new GameFinalScreen(game));
                             Stats.health = 1;
                             break;
+                        case 4:
+                            game.setScreen(new MainMenuScreen(game));
+                            break;
                     }
                 }
 
@@ -229,6 +233,10 @@ public class BulletSystem extends EntitySystem implements EntityListener {
             debugDrawer.begin(Helpers.camera);
             collisionWorld.debugDrawWorld();
             debugDrawer.end();
+        }
+
+        if (Stats.health < 1) {
+            game.setScreen(Stats.isLevels ? new StartLevelsScreen(game) : new StartInfinityScreen(game));
         }
     }
 
