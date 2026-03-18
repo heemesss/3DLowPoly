@@ -53,7 +53,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private ImmutableArray<Entity> entities;
 
     private DebugDrawer debugDrawer;
-    private final boolean debug = false;
+    private final boolean debug = true;
 
     private Core game;
 

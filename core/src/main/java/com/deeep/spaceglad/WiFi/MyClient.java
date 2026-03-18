@@ -49,17 +49,17 @@ public class MyClient {
 
             @Override
             public void connected(Connection connection) {
-//                Listener.super.connected(connection);
+                Listener.super.connected(connection);
             }
 
             @Override
             public void disconnected(Connection connection) {
-//                Listener.super.disconnected(connection);
+                Listener.super.disconnected(connection);
             }
 
             @Override
             public void idle(Connection connection) {
-//                Listener.super.idle(connection);
+                Listener.super.idle(connection);
             }
         });
     }

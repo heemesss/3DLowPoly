@@ -20,8 +20,11 @@ import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.managers.Helpers;
 import com.deeep.spaceglad.managers.Stats;
 import com.deeep.spaceglad.systems.BulletSystem;
+import com.deeep.spaceglad.systems.OnlineSystem;
+import com.deeep.spaceglad.systems.PatronSystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 
@@ -53,12 +56,15 @@ public class GameWorldOnline {
         engine.addSystem(new RenderSystem());
         engine.addSystem(new BulletSystem(game));
         engine.addSystem(new PlayerSystem());
+        engine.addSystem(new PatronSystem());
+        engine.addSystem(new OnlineSystem());
     }
 
     private void addEntities(){
-        engine.addEntity(EntityFactory.loadScene(0, 0, 0, "mountains"));
-        engine.addEntity(EntityFactory.createPlayer(MathUtils.random(-2000, 2000), 200, MathUtils.random(-2000, 2000)));
-        engine.addEntity(EntityFactory.createOnlineEnemy());
+        engine.addEntity(EntityFactory.loadScene(0, 0
+            , 0, "mountains"));
+        engine.addEntity(EntityFactory.createPlayer(MathUtils.random(-2000, 2000), 800, MathUtils.random(-2000, 2000)));
+        engine.addEntity(EntityFactory.createOnlineEnemy(server != null, server, client));
     }
 
     private void setPositionCharacter(Entity entity){
@@ -71,6 +77,30 @@ public class GameWorldOnline {
     public void render(float delta) {
         engine.update(delta);
         Stats.status = "online";
+        if (client != null) {
+            setRequest();
+            client.send();
+            System.out.println(response.x);
+        } else if (server != null) {
+            setResponse();
+            System.out.println(request.text);
+        }
+    }
+
+    public void setRequest(){
+        Vector3 position = Helpers.camera.position.cpy();
+        request.x = position.x;
+        request.y = position.y;
+        request.z = position.z;
+        request.text = "client";
+    }
+
+    public void setResponse(){
+        Vector3 position = Helpers.camera.position.cpy();
+        response.x = position.x;
+        response.y = position.y;
+        response.z = position.z;
+        response.text = "server";
     }
 
     public void resize(int width, int height) {

@@ -20,6 +20,10 @@ import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.JsonReader;
+import com.deeep.spaceglad.WiFi.MyClient;
+import com.deeep.spaceglad.WiFi.MyRequest;
+import com.deeep.spaceglad.WiFi.MyResponse;
+import com.deeep.spaceglad.WiFi.MyServer;
 import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.ButtonComponent;
@@ -250,24 +254,28 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createOnlineEnemy() {
+    public static Entity createOnlineEnemy(boolean isServer, MyServer server, MyClient client) {
         Entity entity = new Entity();
 
         ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
-        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("Models/money.g3dj"));
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("Models/ogr.g3dj"));
         Model model = new Model(modelData, new TextureProvider.FileTextureProvider());
         ModelComponent modelComponent = new ModelComponent(model, 0, 0, 0);
         entity.add(modelComponent);
 
-        btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
-        MotionState motionState = new MotionState(modelComponent.instance.transform);
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, motionState, shape, Vector3.Zero);
-        btRigidBody body = new btRigidBody(bodyInfo);
-        body.userData = entity;
-        BulletComponent bulletComponent = new BulletComponent(body);
-        entity.add(bulletComponent);
+        btBoxShape shape = new btBoxShape(new Vector3(40, 150, 40));
+        btPairCachingGhostObject ghostObject = new btPairCachingGhostObject();
+        ghostObject.setWorldTransform(modelComponent.instance.transform);
+        ghostObject.setCollisionShape(shape);
+        ghostObject.userData = entity;
+        ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        btKinematicCharacterController characterController = new btKinematicCharacterController(ghostObject, shape, 0.35f);
+        characterController.setGravity(new Vector3(0, -1000, 0));
+        characterController.setFallSpeed(10*50);
+        CharacterComponent characterComponent = new CharacterComponent(ghostObject, shape, characterController);
+        entity.add(characterComponent);
 
-        OnlineComponent onlineComponent = new OnlineComponent();
+        OnlineComponent onlineComponent = new OnlineComponent(isServer, server, client);
         entity.add(onlineComponent);
 
         return entity;
